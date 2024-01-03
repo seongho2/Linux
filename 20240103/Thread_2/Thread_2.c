@@ -8,8 +8,8 @@ void *firstThreadRun(void *arg)
 
     for (int i = 1; i <= 9; ++i)
     {
-        printf("Thread 1: %d x %d = %d\n", table, i, table * i);
-        sleep(2);
+        printf("%d x %d = %d\n", table, i, table * i);
+        sleep(1);
     }
 
     return NULL;
@@ -21,8 +21,8 @@ void *secondThreadRun(void *arg)
 
     for (int i = 1; i <= 9; ++i)
     {
-        printf("Thread 2: %d x %d = %d\n", table, i, table * i);
-        sleep(2);
+        printf("%d x %d = %d\n", table, i, table * i);
+        sleep(1);
     }
 
     return NULL;
@@ -34,8 +34,8 @@ void *thirdThreadRun(void *arg)
 
     for (int i = 1; i <= 9; ++i)
     {
-        printf("Thread 3: %d x %d = %d\n", table, i, table * i);
-        sleep(2);
+        printf("%d x %d = %d\n", table, i, table * i);
+        sleep(1);
     }
 
     return NULL;
@@ -48,13 +48,13 @@ int main()
     int table1 = 1, table2 = 2, table3 = 3;
 
     pthread_create(&thread1, NULL, firstThreadRun, (void *)&table1);
-    pthread_join(thread1, NULL); // 1단 출력 후 대기
+    pthread_join(thread1, NULL); 
 
     pthread_create(&thread2, NULL, secondThreadRun, (void *)&table2);
-    pthread_join(thread2, NULL); // 2단 출력 후 대기
+    pthread_join(thread2, NULL);
 
     pthread_create(&thread3, NULL, thirdThreadRun, (void *)&table3);
-    pthread_join(thread3, NULL); // 3단 출력 후 대기
+    pthread_join(thread3, NULL);
 
     return 0;
 }
