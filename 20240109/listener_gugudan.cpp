@@ -1,19 +1,19 @@
 #include "ros/ros.h"
-#include "std_msgs/String.h"
+#include "std_msgs/Int32.h"
 
-void gugudanCallback(const std_msgs::String::ConstPtr& msg)
+void gugudanCallback(const std_msgs::Int32::ConstPtr &data)
 {
-  ROS_INFO("구구단 결과:\n%s", msg->data.c_str());
+    ROS_INFO("answer: %d", data->data);
 }
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "listener_gugudan");
-  ros::NodeHandle nh;
+    ros::init(argc, argv, "listener_gugudan");
+    ros::NodeHandle n;
 
-  ros::Subscriber sub = nh.subscribe("gugudan_result", 10, gugudanCallback);
+    ros::Subscriber sub = n.subscribe("answer", 10, gugudanCallback);
 
-  ros::spin();
+    ros::spin();
 
-  return 0;
+    return 0;
 }
