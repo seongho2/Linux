@@ -5,7 +5,6 @@
 #include "sensor_msgs/Range.h"
 
 double front_sonar_dis = 0.0;
-double speed = 0.0;
 
 geometry_msgs::Twist msg_cmd;
 ros::Subscriber sonar_sensor_range;
@@ -35,13 +34,11 @@ int main(int argc, char **argv)
    ROS_INFO("Sonar Range: [%f]", front_sonar_dis);
    if (front_sonar_dis <= 1.0)
    {
-      speed = 0.0;
-      msg_cmd.linear.x = speed;
+      msg_cmd.linear.x = 0;
    } 
    else
    {
-      speed = 0.5;
-      msg_cmd.linear.x = speed;
+      msg_cmd.linear.x = 0.5;
    }
    
     pub_cmd_vel.publish(msg_cmd);
