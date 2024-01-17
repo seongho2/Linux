@@ -6,8 +6,7 @@
 
 double front_sonar_dis = 0.0;
 
-geometry_msgs::Twist msg_cmd;
-ros::Subscriber sonar_sensor_range;
+
 
 void Sonar_FrontCallback(const sensor_msgs::Range::ConstPtr& msg)
 {
@@ -22,8 +21,10 @@ int main(int argc, char **argv)
 
   ros::NodeHandle n;
     
-  sonar_sensor_range = n.subscribe("/range_front", 1000, Sonar_FrontCallback);
-
+  geometry_msgs::Twist msg_cmd;  
+    
+  ros::Subscriber sonar_sensor_range = n.subscribe("/range_front", 1000, Sonar_FrontCallback);
+  // sonar_sensor_range;  
   ros::Publisher pub_cmd_vel = n.advertise<geometry_msgs::Twist>("/ackermann_steering_controller/cmd_vel", 1000);
 
   ros::Rate loop_rate(30);
