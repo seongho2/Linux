@@ -4,7 +4,7 @@
 #include <math.h>
 
 #define TSL1401CL_SIZE 320
-#define THRESHOLD 0.01  
+  
 #define DEG2RAD(x) (M_PI / 180.0) * x
 #define RAD2DEG(x) (180.0 / M_PI) * x
 
@@ -15,6 +15,7 @@ float error_old = 0.0;
 
 void threshold(double tsl1401cl_data[], int ThresholdData[], int tsl1401cl_size, double threshold)
 {
+	float THRESHOLD = 0.01;
     for (int i = 0; i < TSL1401CL_SIZE; i++)
     {
         if (tsl1401cl_data[i] > threshold)
@@ -30,6 +31,7 @@ void threshold(double tsl1401cl_data[], int ThresholdData[], int tsl1401cl_size,
 
 void Tsl1401clCallback(const std_msgs::Float32MultiArray::ConstPtr &msg)
 {
+	float THRESHOLD = 0.01;
     for (int i = 0; i < TSL1401CL_SIZE; i++)
     {
         tsl1401cl_data[i] = msg->data[i];
@@ -48,16 +50,18 @@ int find_line_center()
         centroid += LineSensor_threshold_Data[i] * i;
     }
 
-    if (mass_sum != 0) 
+    if (mass_sum > 0) 
     {
-		centroid = centroid / mass_sum;
-	}
-	else 
-	{
-		centroid = 0;
-	}
+        centroid = centroid / mass_sum;
+    }
+    else 
+    {
+        centroid = 0;
+    }
+    
     return centroid;
 }
+
 
 void line_control(geometry_msgs::Twist &cmd_vel)
 {
@@ -70,7 +74,7 @@ void line_control(geometry_msgs::Twist &cmd_vel)
 	
 	float Steering_Angle = 0.0;
 
-	float Line_Center = 160.0;
+	float Line_Center = TSL1401CL_SIZE / 2;
 	float OFFSET = 0.0;
     error = Line_Center - find_line_center() + OFFSET;
     error_d = error - error_old;
