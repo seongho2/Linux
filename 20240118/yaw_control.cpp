@@ -22,7 +22,12 @@ void imu1Callback(const sensor_msgs::Imu::ConstPtr& msg)
 
     tf2::Matrix3x3 m(q);      
     m.getRPY(roll, pitch, yaw);
-    printf("%f\n", RAD2DEG(yaw));
+    double change_yaw = RAD2DEG(yaw) + 360.0; 
+    if (change_yaw >= 360.0) 
+    {
+        change_yaw -= 360.0;
+    }
+    printf("%f\n", change_yew);
 }
 
 void yaw_control(geometry_msgs::Twist &cmd_vel)
