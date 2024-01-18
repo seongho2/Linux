@@ -1,4 +1,4 @@
-#include "ros/ros.h"
+#include "ros/ros.h" 
 #include "std_msgs/Float64.h"
 #include "geometry_msgs/Twist.h"
 #include "sensor_msgs/Imu.h"
@@ -10,7 +10,7 @@
 
 float yaw_error_old = 0.0;
 double roll, pitch, yaw;
-double heading_yaw = DEG2RAD(45.0);
+double heading_yaw = 45.0;
 
 void imu1Callback(const sensor_msgs::Imu::ConstPtr& msg) 
 {
@@ -27,21 +27,23 @@ void imu1Callback(const sensor_msgs::Imu::ConstPtr& msg)
     {
         change_yaw -= 360.0;
     }
-    printf("%f\n", change_yew);
+    printf("%f\n", change_yaw);
 }
 
-void yaw_control(geometry_msgs::Twist &cmd_vel)
+geometry_msgs::Twist yaw_control(float Kp, float Ki, float Kd)
 {
-    float Kp = 0.5;
-    float Ki = 0.0;
-    float Kd = 0.8;
+    geometry_msgs::Twist cmd_vel;
+
     float yaw_error = 0.0;
     float yaw_error_d = 0.0;
+    float yaw_error_sum = 0.0;
     float Steering_Angle = 0.0;
 
     yaw_error = heading_yaw - yaw;
     yaw_error_d = yaw_error - yaw_error_old;
-    Steering_Angle = Kp * yaw_error + Kd * yaw_error_d + Ki * yaw_error;
+    yaw_error_sum += yaw_error;
+
+    Steering_Angle = Kp * yaw_error + Kd * yaw_error_d + Ki * yaw_error_sum;
     
     cmd_vel.linear.x = 1.0;
     cmd_vel.angular.z = Steering_Angle;
@@ -50,12 +52,12 @@ void yaw_control(geometry_msgs::Twist &cmd_vel)
     if (yaw_error <= -M_PI)  yaw_error = yaw_error + 2 * M_PI;
 
     yaw_error_old = yaw_error; 
+
+    return cmd_vel;
 }
 
 int main(int argc, char **argv)
 {
-    geometry_msgs::Twist cmd_vel;
-
     ros::init(argc, argv, "yaw_control");
 
     ros::NodeHandle n;
@@ -64,10 +66,15 @@ int main(int argc, char **argv)
     ros::Publisher yaw_cmd_vel_pub = n.advertise<geometry_msgs::Twist>("/ackermann_steering_controller/cmd_vel", 1000);
     ros::Rate loop_rate(30.0);
 
+    float Kp = 0.5;
+    float Ki = 0.0;
+    float Kd = 0.8;
+
     int count = 0;
     while (ros::ok())
     {  
-        yaw_control(cmd_vel);
+        geometry_msgs::Twist cmd_vel = yaw_control(Kp, Ki, Kd);
+
         if (fabs(heading_yaw - yaw) > 0.01)
         {
             yaw_cmd_vel_pub.publish(cmd_vel);
