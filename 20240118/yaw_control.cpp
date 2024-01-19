@@ -8,7 +8,7 @@
 #define DEG2RAD(x) (M_PI / 180.0) * x
 #define RAD2DEG(x) (180.0 / M_PI) * x
 
-float yaw_error_old = 0.0;
+double yaw_error_old = 0.0;
 double roll, pitch, yaw;
 double heading_yaw = 45.0;
 
@@ -30,14 +30,14 @@ void imu1Callback(const sensor_msgs::Imu::ConstPtr& msg)
     printf("%f\n", change_yaw);
 }
 
-geometry_msgs::Twist yaw_control(float Kp, float Ki, float Kd)
+geometry_msgs::Twist yaw_control(double Kp, double Ki, double Kd)
 {
     geometry_msgs::Twist cmd_vel;
 
-    float yaw_error = 0.0;
-    float yaw_error_d = 0.0;
-    float yaw_error_sum = 0.0;
-    float Steering_Angle = 0.0;
+    double yaw_error = 0.0;
+    double yaw_error_d = 0.0;
+    double yaw_error_sum = 0.0;
+    double Steering_Angle = 0.0;
 
     yaw_error = heading_yaw - yaw;
     yaw_error_d = yaw_error - yaw_error_old;
@@ -66,9 +66,9 @@ int main(int argc, char **argv)
     ros::Publisher yaw_cmd_vel_pub = n.advertise<geometry_msgs::Twist>("/ackermann_steering_controller/cmd_vel", 1000);
     ros::Rate loop_rate(30.0);
 
-    float Kp = 0.5;
-    float Ki = 0.0;
-    float Kd = 0.8;
+    double Kp = 0.5;
+    double Ki = 0.0;
+    double Kd = 0.8;
 
     int count = 0;
     while (ros::ok())
