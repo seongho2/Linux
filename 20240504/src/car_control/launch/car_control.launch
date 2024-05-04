@@ -1,0 +1,5 @@
+<launch>
+  <node pkg="car_control" type="car_control_node" name="car_control_node" output="screen">
+ </node> 
+  
+</launch>
